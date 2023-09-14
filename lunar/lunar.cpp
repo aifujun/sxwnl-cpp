@@ -237,6 +237,74 @@ mystl::string nianLiSTR(int y)
  return s;
 }
 
+
+// 重写字符串年历生成函数, 导出想要的数据
+mystl::string export_nian_li(int y) {
+    mystl::string s, s1, s2;
+    double v, qi;
+
+    SSQ::calcY( int2((y-2000.0)*365.2422+180) );
+
+    for(int i = 0; i < 14; i++) {
+        if (SSQ::HS[i+1] > SSQ::ZQ[24]) {
+            break; //已包含下一年的冬至
+        }
+        if (SSQ::leap && (i == SSQ::leap)) {
+            s1 = "闰";
+        }
+        else {
+            s1 = "  ";
+        }
+        s1 += SSQ::ym[i];
+
+        if (s1.length() < 6 || (s1.length() < 9 && (SSQ::leap && i == SSQ::leap))) {
+            s1 += "月";
+        }
+
+        s1 += SSQ::dx[i] > 29 ? "大" : "小";
+        s1 += " " + JD2str(SSQ::HS[i]+J2000).substr(6,5);
+
+        v = OBB::so_accurate2(SSQ::HS[i]);
+        s2 = "("+ JD2str(v+J2000).substr(9,11)+")";
+        if (int2(v+0.5)!=SSQ::HS[i]) {
+            //s2 = "\033[31m" + s2 + "\033[0m";
+        }
+        // s2+="\n";
+        //v=(v+0.5+J2000)%1; if(v>0.5) v=1-v; if(v<8/1440) s2 = "<u>"+s2+"</u>"; //对靠近0点的加注
+        s1 += s2;
+
+        for (int j = -2; j < 24; j++) {
+            if (j >= 0) {
+                qi = SSQ::ZQ[j];
+            }
+            if (j == -1) {
+                qi = SSQ::pe[0];
+            }
+            if (j == -2) {
+                qi = SSQ::pe[1];
+            }
+
+            if (qi < SSQ::HS[i] || qi >= SSQ::HS[i+1]) {
+                continue;
+            }
+            s1 += "  ";
+            s1 += str_jqmc[(j+24)%24] + JD2str(qi+J2000).substr(6,5);
+
+            v = OBB::qi_accurate2(qi);
+            s2 = "("+ JD2str(v+J2000).substr(9,11)+")";
+            if (int2(v+0.5) != qi) {
+                //s2 = "\033[31m" + s2 + "\033[0m";
+            }
+            //v=(v+0.5+J2000)%1; if(v>0.5) v=1-v; if(v<8/1440) s2 = "<u>"+s2+"</u>"; //对靠近0点的加注
+            s1 += s2;
+        }
+        s += s1 + "\n";
+    }
+
+    return s;
+}
+
+
 /*
 main()
 {

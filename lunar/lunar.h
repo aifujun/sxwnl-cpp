@@ -21,4 +21,6 @@ void init_ob();
 OB_LUN yueLiCalc(int By, int Bm);
 mystl::string nianLiSTR(int y);
 
+mystl::string export_nian_li(int y);
+
 #endif

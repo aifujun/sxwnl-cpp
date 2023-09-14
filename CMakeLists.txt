@@ -30,4 +30,6 @@ file(GLOB SRCS
 # 测试
 # add_executable(test0 test/test.cpp ${SRCS})
 
-add_executable(test1 test/test1.cpp ${SRCS})
+# add_executable(test1 test/test1.cpp ${SRCS})
+
+add_executable(test1 export/data_export.cpp ${SRCS})
